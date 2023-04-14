@@ -1,21 +1,18 @@
 const React = require('react');
+const DefaultLayout = require('../layout/Default')
 
 function Show(props){
     const {fruit} = props;
     console.log(fruit);
     return(
+    <DefaultLayout title="Show Page">
+
     <div>
-        <h1>Hello Show Page!</h1>
         <p>The {fruit.name} is {fruit.color} {fruit.readyToEat ? 'Its ready to eat' : 'It is not ready to eat... cant touch this' }</p>
     </div> 
+    </DefaultLayout>
 )
 }
-// class Show extends React.Component {
-//     render(){
-//         return(
-//             <h1>Show Page</h1>
-//         );
-//     };
-// };
+
 
 module.exports = Show;

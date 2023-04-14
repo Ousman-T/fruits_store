@@ -6,6 +6,7 @@ const app = express();
 const PORT = 3000;
 const fruits = require('./models/fruits');
 const Fruit = require('./models/Fruit');
+const methodOverride = require('method-override')
 // const Show = require('./views/Show');
 
 // =========Configurations
@@ -21,6 +22,8 @@ app.use((req, res, next) => {
 })
 // parses data coming from the request
 app.use(express.urlencoded({extended: false}));
+// Override with POST having ?_method = DELETE
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
@@ -42,7 +45,7 @@ app.get('/fruits/', (req, res) => {
  */
 app.get('/fruits/new', (req, res) => {
     res.render('fruits/New')
-})
+});
 /**
  * Post Method (accept data from form)
  */
@@ -61,6 +64,17 @@ app.post('/fruits', (req, res) => {
     })
 });
 
+//* Return the edit form
+app.get('/fruits/:id/edit', (req, res) => {
+    Fruit.findById(req.params.id, (error, foundFruit) => {
+        if(!error){
+            res.render('fruits/Edit', {fruit: foundFruit})
+        } else {
+            res.send({msg: error.message})
+        }
+    })
+})
+
 /**
  * Show Route: (taking in a parameter to show a specific index of the fruit array)
  */
@@ -71,6 +85,13 @@ app.get('/fruits/:id', (req, res) => {
         res.render('fruits/Show', {fruit: foundFruit});
     });
 });
+
+//! Delete 
+app.delete('/fruits/:id', (req, res) => {
+    Fruit.findByIdAndRemove(req.params.id,(error, data) => {
+        res.redirect('/fruits')
+    })
+})
 
 // if none of the routes matches the request show 404 page/ redirect
 app.get('*', (req,res) => {
